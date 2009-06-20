@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+
+# lib のパスを追加しておく
+$LOAD_PATH.unshift(File.expand_path("#{File.dirname(__FILE__)}/../lib/"))
+
+begin
+  require 'sass_watcher'
+  require 'sass'
+rescue LoadError
+  require 'rubygems'
+  require 'sass_watcher'
+  require 'sass'
+end
+
+require 'rubygems'
+
+SassWatcher.new(ARGV).run
+
