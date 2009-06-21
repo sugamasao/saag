@@ -4,8 +4,8 @@ require 'optparse'
 require 'logger'
 require 'pp'
 
-class SassWatcher
-  Version  = '1.0.0'
+class Saag
+  Version  = '0.1.0'
   SASS_EXT = '.sass'
   CSS_EXT  = '.css'
 
@@ -19,9 +19,9 @@ class SassWatcher
     begin
       OptionParser.new do |opt|
         opt.on('-i', '--input_path=VAL', 'input file path(directory or filename)') {|v| @conf[:in_path] = set_dir_path(v)}
-        opt.on('-o', '--output_path=VAL', '') {|v| @conf[:out_path] = set_dir_path(v)}
-        opt.on('-r', '--render_opt=VAL') {|v| @conf[:render_opt] = set_render_opt(v)}
-        opt.on('-d', '--debug') {|v| @conf[:debug] = v}
+        opt.on('-o', '--output_path=VAL', 'generated css file output path') {|v| @conf[:out_path] = set_dir_path(v)}
+        opt.on('-r', '--render_opt=VAL', 'sass render option [nested or expanded or compact or compressed]' ){|v| @conf[:render_opt] = set_render_opt(v)}
+        opt.on('-d', '--debug', 'log level to debug') {|v| @conf[:debug] = v}
       end.parse!(argv)
     rescue OptionParser::InvalidOption, OptionParser::MissingArgument => e
       @logger.error('invalid args...! looks for "-h" option')
@@ -91,14 +91,29 @@ class SassWatcher
         @logger.debug("Signal Trapping [:INT]")
         @exit = true
       }
+    rescue ArgumentError => e
+      @logger.debug("Signal Setting Error[#{e.message}]")
+    end
+
+    begin
       Signal.trap(:TERM){
         @logger.debug("Signal Trapping [:TERM]")
         @exit = true
       }
+    rescue ArgumentError => e
+      @logger.debug("Signal Setting Error[#{e.message}]")
+    end
+
+    begin
       Signal.trap(:HUP){
         @logger.debug("Signal Trapping [:HUP]")
         @exit = true
       }
+    rescue ArgumentError => e
+      @logger.debug("Signal Setting Error[#{e.message}]")
+    end
+
+    begin
       Signal.trap(:BREAK){
         @logger.debug("Signal Trapping [:BREAK]")
         @exit = true
