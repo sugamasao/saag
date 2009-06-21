@@ -36,7 +36,7 @@ begin
       "ChangeLog"
     ]
 
-    gemspec.add_dependency('sass')
+    gemspec.add_dependency('haml')
   end
   
 rescue LoadError
