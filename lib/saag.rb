@@ -5,7 +5,7 @@ require 'logger'
 require 'pp'
 
 class Saag
-  Version  = '0.1.0'
+#  Version  = '0.1.0'
   SASS_EXT = '.sass'
   CSS_EXT  = '.css'
 
