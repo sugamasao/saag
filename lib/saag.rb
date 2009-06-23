@@ -5,7 +5,7 @@ require 'logger'
 require 'pp'
 
 class Saag
-#  Version  = '0.1.0'
+  Version  = '0.1.0'
   SASS_EXT = '.sass'
   CSS_EXT  = '.css'
 
@@ -63,10 +63,13 @@ class Saag
   private
 
   def main_loop(old_list)
+    return nil if @exit # SIGNAL を受けていたら処理を抜ける
     new_list = get_file_list(@conf[:in_path])
     
+    return nil if @exit # SIGNAL を受けていたら処理を抜ける
     file_list = check_file_list(old_list, new_list)
 
+    return nil if @exit # SIGNAL を受けていたら処理を抜ける
     file_list.each do |sass_file|
       if sass_file[:change]
         @logger.info("change file found. => #{sass_file[:path]}")

@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-#$Id$
+# $Id$
 
 # lib のパスを追加しておく
 $LOAD_PATH.unshift(File.expand_path("#{File.dirname(__FILE__)}/../lib/"))
