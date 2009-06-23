@@ -6,14 +6,15 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["sugamasao"]
-  s.date = %q{2009-06-23}
+  s.date = %q{2009-06-24}
   s.default_executable = ["saag"]
   s.description = %q{SAss Automatic monitor and Generate css file.}
   s.email = %q{sugamasao@gmail.com}
   s.executables = ["saag"]
   s.extra_rdoc_files = [
     "ChangeLog",
-     "README"
+     "README",
+     "TODO"
   ]
   s.files = [
     "ChangeLog",
