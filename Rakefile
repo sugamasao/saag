@@ -40,7 +40,8 @@ begin
       "bin/saag", 
       "lib/saag.rb",
       "README",
-      "ChangeLog"
+      "ChangeLog", 
+      "VERSION"
     ]
 
     gemspec.add_dependency('haml')

@@ -21,7 +21,11 @@ class Saag
         opt.on('-i', '--input_path=VAL',  'input file path(directory or filename)') {|v| @conf[:in_path] = set_dir_path(v)}
         opt.on('-o', '--output_path=VAL', 'generated css file output path') {|v| @conf[:out_path] = set_dir_path(v)}
         opt.on('-r', '--render_opt=VAL',  'sass render option [nested or expanded or compact or compressed]' ){|v| @conf[:render_opt] = set_render_opt(v)}
-        opt.on('-v', '--version',  'show version' ){puts "#{self.class} #{Version}"; exit 1}
+        opt.on('-v', '--version',  'show version' ) do 
+          print "#{self.class} "
+          puts File.read("#{File.dirname(__FILE__)}/../VERSION").chomp
+          exit 1
+        end
         opt.on('-d', '--debug',           'log level to debug') {|v| @conf[:debug] = v}
       end.parse!(argv)
     rescue OptionParser::InvalidOption, OptionParser::MissingArgument => e
