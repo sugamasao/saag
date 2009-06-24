@@ -150,17 +150,17 @@ class Saag
   end
 
   def set_default_conf()
-    if @conf[:in_path].nil? or @conf[:in_path].empty?
+    unless @conf[:in_path]
       @conf[:in_path] = Dir.pwd + '/'
     end
-    if @conf[:out_path].nil? or @conf[:out_path].empty?
+    unless @conf[:out_path]
       if File.directory?(@conf[:in_path])
         @conf[:out_path] = @conf[:in_path]
       else
         @conf[:out_path] =File.dirname( @conf[:in_path]) + '/'
       end
     end
-    if @conf[:render_opt].nil? or @conf[:render_opt].empty?
+    unless @conf[:render_opt]
       @conf[:render_opt] = :nested
     end
   end
