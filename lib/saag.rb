@@ -5,14 +5,25 @@ require 'logger'
 require 'pp'
 
 class Saag
-  Version  = '0.1.0'
   SASS_EXT = '.sass'
   CSS_EXT  = '.css'
 
   def initialize(argv = [])
-    # parse option
+    # クラス共通の値
+    @app_name = self.class
+    begin
+      @version  = File.read("#{File.dirname(__FILE__)}/../VERSION").chomp
+    rescue => e
+      @version = "0.0.0"
+    end
+
+    # 引数オプション格納用
     @conf = {}
+
+    # シグナル受信用フラグ（シグナルを受けたら true にして終了する）
     @exit = false
+
+    # Loger の設定
     @logger = Logger.new(STDOUT)
     @logger.level = Logger::INFO # default Log Level
 
@@ -21,11 +32,7 @@ class Saag
         opt.on('-i', '--input_path=VAL',  'input file path(directory or filename)') {|v| @conf[:in_path] = set_dir_path(v)}
         opt.on('-o', '--output_path=VAL', 'generated css file output path') {|v| @conf[:out_path] = set_dir_path(v)}
         opt.on('-r', '--render_opt=VAL',  'sass render option [nested or expanded or compact or compressed]' ){|v| @conf[:render_opt] = set_render_opt(v)}
-        opt.on('-v', '--version',  'show version' ) do 
-          print "#{self.class} "
-          puts File.read("#{File.dirname(__FILE__)}/../VERSION").chomp
-          exit 1
-        end
+        opt.on('-v', '--version',         'show version' ) { puts "#{@app_name} #{@version}"; exit 1 }
         opt.on('-d', '--debug',           'log level to debug') {|v| @conf[:debug] = v}
       end.parse!(argv)
     rescue OptionParser::InvalidOption, OptionParser::MissingArgument => e
@@ -33,7 +40,7 @@ class Saag
       exit 1
     end
 
-    @logger.info("sass file watching start... [app ver=#{Version}]")
+    @logger.info("sass file watching start... [#{@app_name} = #{@version}]")
     @logger.level = Logger::DEBUG if @conf[:debug]
 
     @logger.debug("args input_path  => #{@conf[:in_path]}")
