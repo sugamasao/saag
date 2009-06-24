@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{saag}
-  s.version = "0.2.1"
+  s.version = "0.2.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["sugamasao"]
-  s.date = %q{2009-06-24}
+  s.date = %q{2009-06-25}
   s.default_executable = ["saag"]
   s.description = %q{SAss Automatic monitor and Generate css file.}
   s.email = %q{sugamasao@gmail.com}
