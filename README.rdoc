@@ -3,9 +3,11 @@
 == Description
 
 SASS automatic monitor and generate CSS file.
+
 SASS ファイルを監視し、変更があれば即座に CSS ファイルへ変換します。
+
 手動で以下のコマンドを行うのと同等です。
-% sass hoge.sass hoge.css 
+  % sass hoge.sass hoge.css 
 
 == Gem Installation
 
@@ -13,28 +15,36 @@ SASS ファイルを監視し、変更があれば即座に CSS ファイルへ�
 
 == Features/Problems
  
-* Ruby 1.8.7 でのみ、動作確認を行っています
-* 事前にSASS(HAML)のインストールが必要になります
+* Ruby 1.8.6 及び、 1.8.7 で、動作確認を行っています
+* Windows XP 及び、 Mac OSX で動作確認を行っています
+* 事前にSass(HAML)のインストールが必要になります（未インストール時は本gemと一緒にインストールされます）
 
 == Synopsis
  
- 使用例:
+使用例:
  % saag
-　引数を使用しない場合、コマンド実行者のカレントディレクトリを基点とし、*.sass ファイルを探し、対象ファイルとします。
-  また、出力される CSS ファイルは sass ファイルと同じ階層になります。
+引数を使用しない場合、コマンド実行者のカレントディレクトリを基点とし、*.sass ファイルを探し、対象ファイルとします。
+
+また、出力される CSS ファイルは sass ファイルと同じ階層になります。
   
  % saag -i /path/to/sass
-  -i オプションを使用することで、sass ファイルのあるディレクトリ（ファイル名でも可）を指定する事が可能です。
-  出力先は、上記と同様に、sass ファイルのあるディレクトリになります。
+
+-i オプションを使用することで、sass ファイルのあるディレクトリ（ファイル名でも可）を指定する事が可能です。
+
+出力先は、上記と同様に、sass ファイルのあるディレクトリになります。
 
  % saag -i /path/to/sass -o /path/to/css
-  -o オプションを使用することで、css の出力先ファイルを指定することができます。
-  出力先ファイルのディレクトリ構成は、-i オプションに依存します。
-  上記のオプションを指定、/path/to/sass/sub_dir/hoge.sass があった場合、出力先ディレクトリは
-  /path/to/css/sub_dir/hoge.css となります。
+
+-o オプションを使用することで、css の出力先ファイルを指定することができます。
+
+出力先ファイルのディレクトリ構成は、-i オプションに依存します。
+
+上記のオプションを指定、/path/to/sass/sub_dir/hoge.sass があった場合、出力先ディレクトリは
+
+/path/to/css/sub_dir/hoge.css となります。
 
 == Copyright
- 
- Author:: sugamasao <sugamasao@gmail.com>
- License:: Ruby's
+
+Author:: sugamasao <sugamasao@gmail.com>
+License:: Ruby's
 
