@@ -4,10 +4,22 @@ require 'optparse'
 require 'logger'
 require 'pp'
 
+#
+# Sass 補助ツール、saag クラスです
+#
 class Saag
   SASS_EXT = '.sass'
   CSS_EXT  = '.css'
 
+  #== saag Constructor
+  # 引数の解析、及び初期値の設定を行います
+  #
+  #=== 引数
+  # 引数となる配列
+  #
+  #=== 例外
+  # 特になし
+  #
   def initialize(argv = [])
     # クラス共通の値
     @app_name = self.class
@@ -54,6 +66,18 @@ class Saag
     @logger.info("output   directory => #{@conf[:out_path]}")
   end
 
+  #== saag#run
+  # saag によるファイル監視を実行します
+  #
+  #=== 引数
+  # なし
+  #
+  #=== 戻り値
+  # なし
+  #
+  #=== 例外
+  # なし
+  #
   def run
     old_list = []
     # メインループ
@@ -72,8 +96,24 @@ class Saag
     @logger.info("sass file watching exit...")
   end
 
+  ############################
+  # private methods
+  ############################
   private
 
+  #== saag#main_loop
+  # saag の監視処理のメイン処理です。
+  # このメソッドを繰り返し呼ぶ事で監視処理を実施しています。
+  #
+  #=== 引数
+  # _old_list_::  Array オブジェクト 前回の main_loop メソッドで取得したファイルリストの一覧。
+  #
+  #=== 戻り値
+  # Array:: main_loop内で取得したファイルリストの配列。
+  #
+  #=== 例外
+  # なし
+  # 
   def main_loop(old_list)
     return nil if @exit # SIGNAL を受けていたら処理を抜ける
     new_list = get_file_list(@conf[:in_path])
@@ -93,13 +133,38 @@ class Saag
     return new_list
   end
 
+  #== saag#set_dir_path
   # 絶対パスにし、ディレクトリの場合は最後尾にスラッシュを付ける
+  #
+  #=== 引数
+  # _path_:: ファイルパスの記載された String オブジェクト
+  #
+  #=== 戻り値
+  # String:: ディレクトリであれば末尾に '/' を付加した、絶対パスのファイル名
+  #
+  #=== 例外
+  # なし
+  #
   def set_dir_path(path)
     path =  File.expand_path(path)
     path = path + '/' if File.directory?(path)
     return path
   end
 
+  #== saag#set_signal
+  # シグナルハンドラの設定
+  # シグナルを受けると即死するのではなく、キリの良いところで終了するよう、
+  # 終了フラグを true にするだけの処理を行う。
+  #
+  #=== 引数
+  # なし
+  #
+  #=== 戻り値
+  # なし
+  #
+  #=== 例外
+  # なし
+  # 
   def set_signal
     begin
       Signal.trap(:INT){
@@ -138,6 +203,19 @@ class Saag
     end
   end
 
+  #== saag#set_render_opt
+  # sass 実行時のオプション設定用メソッド
+  # オプションで値が渡されていれば その値を、そうでなければでフォルト値のnestedを使う。
+  #
+  #=== 引数
+  # _input_opt_:: 引数の -r で入力された文字列
+  #
+  #=== 戻り値
+  # Symbol:: 入力された文字列に対応した Symbol
+  #
+  #=== 例外
+  # なし
+  #
   def set_render_opt(input_opt)
     opt = ""
     case input_opt.downcase
@@ -156,6 +234,20 @@ class Saag
     return opt
   end
 
+  #== saag#set_default_conf
+  # sass 実行時のオプション設定用メソッド。
+  # 省略時の入力パスと出力パスを設定する。
+  # ディレクトリの場合は '/' を付加する。
+  #
+  #=== 引数
+  # なし
+  #
+  #=== 戻り値
+  # なし
+  #
+  #=== 例外
+  # なし
+  # 
   def set_default_conf()
     unless @conf[:in_path]
       @conf[:in_path] = Dir.pwd + '/'
@@ -172,7 +264,18 @@ class Saag
     end
   end
 
+  #== saag#get_file_list
   # ファイルのパスと時刻のリストを作成する
+  #
+  #=== 引数
+  # _in_path_:: 引数の -i で入力されたパス
+  #
+  #=== 戻り値
+  # Array:: 時刻とパスを保持したファイルリスト。
+  #
+  #=== 例外
+  # なし
+  #
   def get_file_list(in_path)
     list = []
     if File.file?(in_path)
@@ -188,6 +291,23 @@ class Saag
     return list.compact
   end
 
+  #== saag#create_file_data
+  # ファイルパスと時刻等を保持した HASH を生成する。
+  # 生成する HASH の内容は以下の通り
+  # * :path => ファイルの絶対パス
+  # * :sub_path => 入力時に指定されたディレクトリ以降からのファイルパス
+  # * :time => 対象ファイルの mtime
+  # * :change => 前回との変更があったか？を現すフラグ（この時点では全て true）
+  #
+  #=== 引数
+  # _path_:: ファイルパス
+  #
+  #=== 戻り値
+  # Hash:: 時刻とパス等を保持した Hash データ。
+  #
+  #=== 例外
+  # なし
+  # 
   def create_file_data(path)
     # 入力パスと実ファイルのパスの差分を出す（この差分が出力ディレクトリの連結パスとなる）
     sub_path = ""
@@ -206,13 +326,26 @@ class Saag
     return data
   end
 
+  #== saag#check_file_list
+  # 前回走査したファイルリストと、今回走査したファイルリストにおいて、
+  # ファイルの更新や追加があったリストの :change を true にし、そうでなければ false にする。
+  #
+  #=== 引数
+  # _old_list_:: 前回のループで取得したファイルリストの Array
+  # _new_list_:: 今回のループで取得したファイルリストの Array
+  #
+  #=== 戻り値
+  # Array:: change フラグの更新が終わった new_list
+  #
+  #=== 例外
+  # なし
   def check_file_list(old_list, new_list)
     return new_list if old_list.empty?
 
     new_list.each do |new|
       old_list.each do |old|
-        if(new[:path] == old[:path])
-          if(new[:time] > old[:time])
+        if(new[:path] == old[:path]) # 前回と今回で同じファイルがあれば、時刻の比較を行う
+          if(new[:time] > old[:time]) # 時刻が更新されていれば true
             new[:change] = true
           else
             new[:change] = false
@@ -224,6 +357,19 @@ class Saag
     return new_list
   end
 
+  #== saag#write_css_file
+  # 変換された CSS ファイルを出力する
+  #
+  #=== 引数
+  # _sass_file:: 変換対象のファイルの Hash
+  # _css_text_:: 変換された CSS テキストの String
+  #
+  #=== 戻り値
+  # なし
+  #
+  #=== 例外
+  # SystemCallError:: ファイル出力時の例外時に出力
+  # 
   def write_css_file(sass_file, css_text)
     @logger.debug("@conf[:out_path] = #{@conf[:out_path]}, sass_file[:sub_path] = #{sass_file[:sub_path]}")
     out_dir = ""
