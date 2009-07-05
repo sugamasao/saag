@@ -87,8 +87,6 @@ class Saag
         break if @exit # SIGNAL を受けたりすると true
         sleep 1
       end
-    rescue SystemCallError => e
-      @logger.error("File I/O Error! [#{e.message}]")
     rescue => e
       @logger.error("FATLE Error! [#{e.message}]")
     end
@@ -125,8 +123,17 @@ class Saag
     file_list.each do |sass_file|
       if sass_file[:change]
         @logger.info("change file found. => #{sass_file[:path]}")
-        css_text = Sass::Engine.new(File.read(sass_file[:path]), {:style => @conf[:render_opt] }).render
-        write_css_file(sass_file, css_text)
+        begin
+          # render to sass text
+          css_text = Sass::Engine.new(File.read(sass_file[:path]), {:style => @conf[:render_opt] }).render
+          write_css_file(sass_file, css_text)
+        rescue Sass::SyntaxError => e
+          @logger.error("Sass Syntax Error! file => [#{sass_file[:path]}] error message => [#{e.message}]")
+          new_list = set_default_time(new_list, sass_file[:path])
+        rescue SystemCallError => e
+          @logger.error("File I/O Error! file => [#{sass_file[:path]}] error message => [#{e.message}]")
+          new_list = set_default_time(new_list, sass_file[:path])
+        end
       end
     end
 
@@ -339,6 +346,7 @@ class Saag
   #
   #=== 例外
   # なし
+  #
   def check_file_list(old_list, new_list)
     return new_list if old_list.empty?
 
@@ -391,6 +399,29 @@ class Saag
       f.puts(css_text)
     end
     @logger.info("generate css file => #{filename}")
+  end
+
+  #== saag#set_default_time
+  # 指定された path の :time 値をあり得ない値にして更新する。
+  # 更新に失敗したデータは時刻を現在より過去のものにして、次回のループで変換対象となるようにする。
+  #
+  #=== 引数
+  # _list_:: 走査対象のファイルリスト
+  # _path_:: 更新に失敗したファイルのパス
+  #
+  #=== 戻り値
+  # Array:: :time の更新が終わった new_list
+  #
+  #=== 例外
+  # なし
+  #
+  def set_default_time(file_list, path)
+    file_list.map do |list|
+      if list[:path] == path
+        list[:time] = Time.at(0) # 1970/1/1
+      end
+      list
+    end
   end
 end
 

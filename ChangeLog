@@ -1,3 +1,13 @@
+2009-07-06  sugamasao@gmail.com
+
+	* Version 0.3.4 : modified ends at the [Sass Syntax Error] or [File I/O
+	Error]. endless loop for file search.
+
+2009-07-05  sugamasao@gmail.com
+
+	* Version 0.3.2 : moved README to README.rdoc
+	* Version 0.3.0 : added to rdoc comments
+
 2009-06-25  sugamasao@gmail.com
 
 	* Version 0.2.4 : change to this file.

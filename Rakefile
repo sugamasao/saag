@@ -16,7 +16,7 @@ RDOC_OPTS = ['--title', "#{NAME} documentation",
     "--charset", "utf-8",
     "--opname", "index.html",
     "--line-numbers",
-    "--main", "README",
+    "--main", "README.rdoc",
     "--inline-source",
 ]
 
@@ -33,13 +33,13 @@ begin
     gemspec.has_rdoc              = true
     gemspec.homepage              = "http://github.com/sugamasao/#{NAME}"
     gemspec.authors               = AUTHOR
-    gemspec.extra_rdoc_files      = ["README", "ChangeLog", "TODO"]
+    gemspec.extra_rdoc_files      = ["README.rdoc", "ChangeLog", "TODO"]
     gemspec.required_ruby_version = Gem::Requirement.new(">= 1.8.6")
     
     gemspec.files                 = [
       "bin/saag", 
       "lib/saag.rb",
-      "README",
+      "README.rdoc",
       "ChangeLog", 
       "VERSION"
     ]

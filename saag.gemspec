@@ -2,29 +2,29 @@
 
 Gem::Specification.new do |s|
   s.name = %q{saag}
-  s.version = "0.2.4"
+  s.version = "0.3.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["sugamasao"]
-  s.date = %q{2009-06-25}
+  s.date = %q{2009-07-06}
   s.default_executable = ["saag"]
   s.description = %q{SAss Automatic monitor and Generate css file.}
   s.email = %q{sugamasao@gmail.com}
   s.executables = ["saag"]
   s.extra_rdoc_files = [
     "ChangeLog",
-     "README",
+     "README.rdoc",
      "TODO"
   ]
   s.files = [
     "ChangeLog",
-     "README",
+     "README.rdoc",
      "VERSION",
      "bin/saag",
      "lib/saag.rb"
   ]
   s.homepage = %q{http://github.com/sugamasao/saag}
-  s.rdoc_options = ["--title", "saag documentation", "--charset", "utf-8", "--opname", "index.html", "--line-numbers", "--main", "README", "--inline-source", "--exclude", "^(examples|extras)/"]
+  s.rdoc_options = ["--title", "saag documentation", "--charset", "utf-8", "--opname", "index.html", "--line-numbers", "--main", "README.rdoc", "--inline-source", "--exclude", "^(examples|extras)/"]
   s.require_paths = ["lib"]
   s.required_ruby_version = Gem::Requirement.new(">= 1.8.6")
   s.rubygems_version = %q{1.3.4}
