@@ -1,5 +1,3 @@
-# $Id$
-
 require 'optparse'
 require 'logger'
 require 'pp'
@@ -41,11 +39,26 @@ class Saag
 
     begin
       OptionParser.new do |opt|
-        opt.on('-i', '--input_path=VAL',  'input file path(directory or filename)') {|v| @conf[:in_path] = set_dir_path(v)}
-        opt.on('-o', '--output_path=VAL', 'generated css file output path') {|v| @conf[:out_path] = set_dir_path(v)}
-        opt.on('-r', '--render_opt=VAL',  'sass render option [nested or expanded or compact or compressed]' ){|v| @conf[:render_opt] = set_render_opt(v)}
-        opt.on('-v', '--version',         'show version' ) { puts "#{@app_name} #{@version}"; exit 1 }
-        opt.on('-d', '--debug',           'log level to debug') {|v| @conf[:debug] = v}
+        opt.on('-i', '--input_path=VAL',  'input file path(directory or filename)') do |v|
+          @conf[:in_path] = set_dir_path(v)
+        end
+        opt.on('-o', '--output_path=VAL', 'generated css file output path') do |v|
+          @conf[:out_path] = set_dir_path(v)
+        end
+        opt.on('-r', '--render_opt=VAL',  'sass render option [nested or expanded or compact or compressed]') do |v|
+          @conf[:render_opt] = set_render_opt(v)
+        end
+        opt.on('-v', '--version',         'show version' ) do
+          # TODO stderror print.
+          puts "#{@app_name} #{@version}";
+          exit 1
+        end
+        opt.on('-d', '--debug',           'log level to debug') do |v|
+          @conf[:debug] = v
+        end
+        opt.on('-x', '--exclude',         'exclude older Sass Script(target to "Time.now < Sass Script Modified Time")') do
+          @conf[:exclude] = true
+        end
       end.parse!(argv)
     rescue OptionParser::InvalidOption, OptionParser::MissingArgument => e
       @logger.error('invalid args...! looks for "-h" option')
@@ -58,6 +71,7 @@ class Saag
     @logger.debug("args input_path  => #{@conf[:in_path]}")
     @logger.debug("args output_path => #{@conf[:out_path]}")
     @logger.debug("args render_opt  => #{@conf[:render_opt]}")
+    @logger.debug("args -x?         => #{@conf[:exclude]}")
 
     set_default_conf()
     set_signal()
@@ -269,6 +283,9 @@ class Saag
     unless @conf[:render_opt]
       @conf[:render_opt] = :nested
     end
+
+    # プロセス開始時刻
+    @conf[:start_time] = Time.now
   end
 
   #== saag#get_file_list
@@ -323,11 +340,20 @@ class Saag
     if path =~ /#{@conf[:in_path]}(.+)/
       sub_path = $1
     end
+
+    change = true
+    file_time = File.mtime(path)
+    # exclude オプションが無い（デフォルト時）はプロセスのスタート時刻よりも古い時刻のファイルは false にする
+    unless @conf[:exclude]
+      @logger.debug("no exclude option.")
+      change = false if(file_time < @conf[:start_time]) 
+    end
+
     data = {
       :path => path, 
       :sub_path => sub_path, 
-      :time => File.mtime(path), 
-      :change => true
+      :time => file_time, 
+      :change => change
     }
     @logger.debug("create_file_data@sub_path => #{sub_path}")
     return data

@@ -1,3 +1,7 @@
+2009-08-08  sugamasao@gmail.com
+
+	* Version 0.3.5 : add option "-x"
+
 2009-07-06  sugamasao@gmail.com
 
 	* Version 0.3.4 : modified ends at the [Sass Syntax Error] or [File I/O
