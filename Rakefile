@@ -1,5 +1,3 @@
-# $Id$
-
 ###############################
 # 1. rake gemspec # --> generate gemspec.
 # 2. rake build   # --> create gems file.
